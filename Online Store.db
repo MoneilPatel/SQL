@@ -1,0 +1,133 @@
+Create Table Users(
+		Name varchar(70) Not Null,
+		Username varchar(70) Not Null,
+		Password varchar(70) Not Null,
+		Email varchar(70) Not Null,
+		PRIMARY Key(Username));
+Create Table Products(
+		productName varchar(70) Not Null, 
+		Price REAL NOT NULL,
+		ProductID INT NOT NULL,
+		Primary Key(Price,productName));
+Create Table Inventory( 
+		pName varchar(70) Not null,
+		sellName varchar(70) Not Null, 
+		price REAL not null,
+		numProducts INT NOT NULL, 
+		Foreign Key(pName,price) REFERENCES Products(productName,Price),
+		Foreign Key(sellName) REFERENCES Users(Username));
+Create Table Shopping_Cart(
+		pName varchar(70) NOT NULL,
+		produtPrice Real NOT NULL,
+                       sellName varchar(70) NOT NULL,
+		Foreign Key(pName,produtPrice) REFERENCES Products(pName,Price),
+		Foreign Key(sellName) REFERENCES Users(Username));					   
+
+Create TablE Payment_Type(
+		PaymentID INT NOT NULL,
+		CreditCard REAL,
+		PAYPAL REAL,
+		Primary Key(paymentID));
+Create Table Transactions(
+		TransactionID INT NOT NULL,
+                       datePurchased varchar(70) NOT NULL,
+		payId INT NOT NULL, 
+		pName varchar(70) Not null,
+		creditCardAmount REAL NOT NULL,
+		payPalAmount REAL NOT NULL,
+		sellName varchar(70) Not Null, 
+		price REAL not null,
+                       buyerName varchar(50),
+		Givenrating INT, 
+		Foreign Key(pName,price) REFERENCES Products(productName,Price),
+		Foreign Key(sellName) REFERENCES Users(Username),
+		Foreign KEY(payID) REFERENCES Payment_Type(PaymentID)
+                       Primary Key(TransactionID)
+  );
+Create Table Sellers(
+                       sellerName varchar(50),
+                       numSelling INT NOT NULL,
+                       Rating INT Not Null, 
+                       Foreign Key(sellerName) References Users(Username)
+);
+
+Create Table Buyer(
+                    T_ID INT NOT NULL,
+                    buyerName varchar(70) NOT NULL,
+                    Foreign KEY(T_ID) REFERENCES Transactions(TransactionID),
+                    Foreign Key(buyerName) REFERENCES Users(UserName)
+);
+
+Insert into Users (Name, UserName, Password, Email) Values("Dave Franco", "DFRank", "EGGS123", "DAVID@yahoo.com");
+Insert into Users (Name, UserName, Password, Email) Values("Franco", "JamesF", "EGGS12", "Franco@yahoo.com");
+
+Insert into Users (Name, UserName, Password, Email) Values("Donlad Frump", "TRAIN", "PRES123", "Pres@yahoo.com");
+Insert into Users (Name, UserName, Password, Email) Values("Frmp", "FrmpD", "Train123", "Train@yahoo.com");
+
+Insert into Users (Name, UserName, Password, Email) Values("David Fizdale", "Fizdale123", "FIZZY", "Fizdale@yahoo.com");
+Insert into Users (Name, UserName, Password, Email) Values("Fizdale", "Fizdavid", "Fizdale2", "Fizdavid@yahoo.com");
+
+Insert into Users (Name, UserName, Password, Email) Values("CHIMP Franco", "CHIOMP", "EGGS123", "Cihpm@yahoo.com");
+Insert into Users (Name, UserName, Password, Email) Values("CHIMP", "JamesF", "EGGS12", "CHIP@yahoo.com");
+
+Insert into Users (Name, UserName, Password, Email) Values("PERSON 1", "person2", "p123", "p1@yahoo.com");
+Insert into Users (Name, UserName, Password, Email) Values("PEROSON 2", "person", "p234", "p2@yahoo.com");
+
+
+Insert into Sellers(sellerName,numSelling,Rating) Values("TRAIN", 5, 1);
+Insert into Sellers(sellerName,numSelling,Rating) Values("Fizdavid", 4, 5);
+Insert into Sellers(sellerName,numSelling,Rating) Values("DFRank", 15, 3);
+
+
+Insert into Buyer(T_ID, buyerName) Values(5,"Fizdale123");
+Insert into Buyer(T_ID, buyerName) Values(60,"Fizdale123");
+
+
+Insert into Products(ProductName,Price,ProductID) Values("test",5.00,55);
+Insert into Products(ProductName,Price,ProductID) Values("dum",4.00,55);
+Insert into Products(ProductName,Price,ProductID) Values("t",10.00,55);
+Insert into Products(ProductName,Price,ProductID) Values("t1",7.00,55);
+
+Insert into Payment_Type(PaymentID,CreditCard,PAYPAL) Values (5,5.0,0);
+Insert into Payment_Type(PaymentID,CreditCard,PAYPAL) Values (4,1.0,3.0);
+Insert into Payment_Type(PaymentID,CreditCard,PAYPAL) Values (53,5.0,5.0);
+Insert into Payment_Type(PaymentID,CreditCard,PAYPAL) Values (2,2.0,5.0);
+
+Insert into Transactions(TransactionID,datePurchased,payID,pName,creditCardAmount,payPalAmount, sellName,price,buyerName,GivenRating) Values(65,"6-2-2019",5,"test",5.00,0,"TRAIN",5.00,"David Fizdale",5);
+Insert into Transactions(TransactionID,datePurchased,payID,pName,creditCardAmount,payPalAmount, sellName,price,buyerName,GivenRating) Values(60,"6-3-2019",4,"dum",1.00,3.00,"Fizdavid",4.00,"David Fizdale",4);
+Insert into Transactions(TransactionID,datePurchased,payID,pName,creditCardAmount,payPalAmount, sellName,price,buyerName,GivenRating) Values(5,"6-5-2019",53,"t",5.00,5.00,"Fizdavid",10.00,"David Fizdale",2);
+Insert into Transactions(TransactionID,datePurchased,payID,pName,creditCardAmount,payPalAmount, sellName,price,buyerName,GivenRating) Values(1,"6-5-2019",2,"t1",2.00,5.00,"Fizdavid",7.00,"David Fizdale",2);
+
+Insert into Inventory(pName,sellName,price,numProducts) Values("test","TRAIN",5.00,1);
+Insert into Inventory(pName,sellName,price,numProducts) Values("dum","Fizdavid",4.00,3);
+Insert into Inventory(pName,sellName,price,numProducts) Values("t1","DFRank",7.00,2);
+
+SELECT pName from Inventory, Sellers as s
+WHERE 
+	price < 10 AND s.sellerName == sellerName;
+ 
+select datePurchased, pName from Transactions, Buyer as B
+WHERE 
+    B.T_ID = TransactionID;
+ 
+Select name from Users, Sellers as S
+	Where 
+		S.numSelling <= 5 AND
+		S.sellerName == Username;
+  
+Select buyerName, pName from Transactions, Sellers as S, Transactions as T 
+	Where 
+		T.sellName = s.sellerName;
+  
+Select Count(BuyerName) 
+	From Transactions, Users as U
+		Where
+			U.Username = BuyerName;
+   
+
+SELECT       BuyerName,
+             COUNT(BuyerName) AS `Val` 
+    FROM     Transactions
+    GROUP BY BuyerName
+    ORDER BY Val DESC
+    LIMIT    1;
